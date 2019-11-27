@@ -1,0 +1,18 @@
+name: mocki
+port: 3002
+endpoints:
+  - path: /hello
+    method: get
+    responses:
+      - statusCode: 200
+        headers:
+          - name: X-Powered-By
+            value: Hello World!
+        body:
+          - goodbye: world
+      - statusCode: 404
+        headers:
+          - name: X-Powered-By
+            value: mocki
+        body:
+          - message: Hello World!
