@@ -1,18 +1,59 @@
 name: mocki
-port: 3002
+port: 3001
 endpoints:
-  - path: /hello
+  - path:
     method: get
     responses:
       - statusCode: 200
-        headers:
-          - name: X-Powered-By
-            value: Hello World!
         body:
-          - goodbye: world
-      - statusCode: 404
+          message: Hello from Mocki!
         headers:
-          - name: X-Powered-By
-            value: mocki
+          name: x-powered-by
+          value: mocki
+
+  - path: /conditional
+    method: get
+    behavior: conditional
+    responses:
+      - statusCode: 200
+        condition: # trigger if authorization header equals 'valid'
+          operator: =
+          comparand: headers.authorization # for query parameters: query.prop, for path parameters: params.prop
+          value: valid
         body:
-          - message: Hello World!
+          message: valid header
+      - statusCode: 401
+        condition: # trigger if authorization header equals 'invalid'
+          operator: =
+          comparand: headers.authorization
+          value: invalid
+        body:
+          message: invalid header
+  - path: /conditional/:id
+    method: get
+    behavior: conditional
+    responses:
+      - statusCode: 200
+        condition:
+          operator: =
+          comparand: params.message
+          value:
+        body:
+          message: param value was a
+      - statusCode: 200
+        condition:
+          operator: =
+          comparand: query.message
+          value: b
+        body:
+          message: param value was b
+  - path: /random
+    method: get
+    behavior: random
+    responses:
+      - statusCode: 200
+        body:
+          number: 1
+      - statusCode: 200
+        body:
+          number: 2

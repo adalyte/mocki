@@ -1,6 +1,8 @@
+import config from './config';
+import logger from './logger';
 import express from 'express';
 import args from 'command-line-args';
-import config from './config';
+import { get } from 'lodash';
 
 const app = express();
 const options = args([
@@ -13,11 +15,26 @@ const options = args([
 ]);
 
 const configuration = config.get(options.path);
+const port = configuration.port || 3000;
 
 configuration.endpoints.forEach(endpoint => {
   app[endpoint.method](endpoint.path, (req, res) => {
-    const response =
-      endpoint.responses[Math.floor(Math.random() * endpoint.responses.length)];
+    let response;
+    const defaultResponse = endpoint.responses[0];
+    if (!endpoint.behavior) response = defaultResponse;
+    else if (endpoint.behavior === 'random') {
+      response =
+        endpoint.responses[
+          Math.floor(Math.random() * endpoint.responses.length)
+        ];
+    } else if (endpoint.behavior === 'conditional') {
+      response = endpoint.responses.find(
+        response =>
+          get(req, response.condition.comparand) === response.condition.value
+      );
+    }
+    if (!response) response = defaultResponse;
+
     res.status(response.statusCode || 200);
     if (response.headers) {
       response.headers.forEach(header => {
@@ -28,6 +45,17 @@ configuration.endpoints.forEach(endpoint => {
   });
 });
 
-app.listen(configuration.port, () =>
-  console.log(`Mocki running on http://localhost:${configuration.port}`)
-);
+app.listen(port, () => {
+  logger.info('🚀 Thank you for using Mocki!\n');
+  logger.info(
+    '📘 Having trouble? Check out the official documentation at https://mocki.io/docs\n'
+  );
+  logger.info('endpoints:\n', ' ');
+  configuration.endpoints.forEach(endpoint => {
+    logger.white(`${endpoint.method.toUpperCase()} - ${endpoint.path}`, ' ');
+  });
+  logger.info(
+    `\n${configuration.name} running on http://localhost:${port}`,
+    ' '
+  );
+});
