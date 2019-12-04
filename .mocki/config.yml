@@ -17,14 +17,14 @@ endpoints:
     responses:
       - statusCode: 200
         condition: # trigger if authorization header equals 'valid'
-          operator: =
+          operator: eq
           comparand: headers.authorization # for query parameters: query.prop, for path parameters: params.prop
           value: valid
         body:
           message: valid header
       - statusCode: 401
         condition: # trigger if authorization header equals 'invalid'
-          operator: =
+          operator: eq
           comparand: headers.authorization
           value: invalid
         body:
@@ -35,14 +35,14 @@ endpoints:
     responses:
       - statusCode: 200
         condition:
-          operator: =
+          operator: eq
           comparand: params.message
           value:
         body:
           message: param value was a
       - statusCode: 200
         condition:
-          operator: =
+          operator: eq
           comparand: query.message
           value: b
         body:
@@ -68,3 +68,4 @@ endpoints:
           address: !Fake streetAddress
           phone: !Fake phoneNumber
           createdAt: !Fake pastDate
+          company: !Fake company

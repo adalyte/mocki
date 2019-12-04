@@ -6,7 +6,7 @@ import faker from 'faker';
 const fake = {
   tag: '!Fake',
   resolve: (_doc, cst) => {
-    let value;
+    let value = cst.strValue;
     switch (cst.strValue) {
       case 'firstName':
         value = faker.name.firstName();
@@ -50,8 +50,6 @@ const fake = {
       case 'phoneNumber':
         value = faker.phone.phoneNumber();
         break;
-      default:
-        value = obj[k];
     }
     return value;
   }

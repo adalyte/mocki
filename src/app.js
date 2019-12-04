@@ -18,6 +18,8 @@ const options = args([
 const configuration = config.get(options.path);
 const port = configuration.port || 3000;
 
+const validOperators = ['eq'];
+
 configuration.endpoints.forEach(endpoint => {
   app[endpoint.method](endpoint.path, (req, res) => {
     let response;
@@ -29,6 +31,15 @@ configuration.endpoints.forEach(endpoint => {
           Math.floor(Math.random() * endpoint.responses.length)
         ];
     } else if (endpoint.behavior === 'conditional') {
+      endpoint.responses.forEach(response => {
+        if (!validOperators.includes(response.condition.operator)) {
+          logger.error(
+            `Invalid operator '${
+              response.condition.operator
+            }'. Valid operators are: ${validOperators.join(', ')}.`
+          );
+        }
+      });
       response = endpoint.responses.find(
         response =>
           get(req, response.condition.comparand) === response.condition.value
