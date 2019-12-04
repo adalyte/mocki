@@ -2,7 +2,6 @@ import config from './config';
 import logger from './logger';
 import express from 'express';
 import args from 'command-line-args';
-import faker from 'faker';
 import { get } from 'lodash';
 
 const app = express();
