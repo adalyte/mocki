@@ -1,7 +1,7 @@
 name: mocki
 port: 3001
 endpoints:
-  - path:
+  - path: /
     method: get
     responses:
       - statusCode: 200
@@ -57,3 +57,14 @@ endpoints:
       - statusCode: 200
         body:
           number: 2
+  - path: /fake
+    method: get
+    responses:
+      - statusCode: 200
+        body:
+          firstName: !Fake firstName
+          lastName: !Fake lastName
+          email: !Fake email
+          address: !Fake streetAddress
+          phone: !Fake phoneNumber
+          createdAt: !Fake pastDate

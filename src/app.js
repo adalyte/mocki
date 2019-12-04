@@ -2,6 +2,7 @@ import config from './config';
 import logger from './logger';
 import express from 'express';
 import args from 'command-line-args';
+import faker from 'faker';
 import { get } from 'lodash';
 
 const app = express();
@@ -50,7 +51,7 @@ app.listen(port, () => {
   logger.info(
     '📘 Having trouble? Check out the official documentation at https://mocki.io/docs\n'
   );
-  logger.info('endpoints:\n', ' ');
+  logger.info('Endpoints:\n', ' ');
   configuration.endpoints.forEach(endpoint => {
     logger.white(`${endpoint.method.toUpperCase()} - ${endpoint.path}`, ' ');
   });
