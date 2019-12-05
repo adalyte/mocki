@@ -47,6 +47,14 @@ configuration.endpoints.forEach(endpoint => {
       );
     }
     if (!response) response = defaultResponse;
+    if (response.delay && response.delay > 0) {
+      const start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if (new Date().getTime() - start > response.delay) {
+          break;
+        }
+      }
+    }
 
     res.status(response.statusCode || 200);
     if (response.headers) {

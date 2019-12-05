@@ -69,3 +69,10 @@ endpoints:
           phone: !Fake phoneNumber
           createdAt: !Fake pastDate
           company: !Fake company
+  - path: /delay
+    method: get
+    responses:
+      - statusCode: 200
+        delay: 500
+        body:
+          message: delayed by 500 ms
