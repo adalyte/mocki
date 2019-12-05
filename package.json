@@ -1,13 +1,14 @@
 {
-  "name": "mocki-cli",
+  "name": "mocki",
   "version": "1.0.0",
+  "bin": "src/app.js",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "npx babel-node src/app.js",
     "test:unit": "node_modules/.bin/mocha --require babel-core/register test/unit/**.unit.js"
   },
-  "author": "Adalyte AB",
+  "author": "adalyte",
   "license": "ISC",
   "dependencies": {
     "chalk": "^3.0.0",
