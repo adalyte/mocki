@@ -8,9 +8,8 @@ endpoints:
         body:
           message: Hello from Mocki!
         headers:
-          name: x-powered-by
-          value: mocki
-
+          name: content-type
+          value: application/json
   - path: /conditional
     method: get
     behavior: conditional
@@ -22,6 +21,9 @@ endpoints:
           value: valid
         body:
           message: valid header
+        headers:
+          name: content-type
+          value: application/json
       - statusCode: 401
         condition: # trigger if authorization header equals 'invalid'
           operator: eq
@@ -29,6 +31,9 @@ endpoints:
           value: invalid
         body:
           message: invalid header
+        headers:
+          name: content-type
+          value: application/json
   - path: /conditional/:id
     method: get
     behavior: conditional
@@ -40,6 +45,9 @@ endpoints:
           value:
         body:
           message: param value was a
+        headers:
+          name: content-type
+          value: application/json
       - statusCode: 200
         condition:
           operator: eq
@@ -47,6 +55,9 @@ endpoints:
           value: b
         body:
           message: param value was b
+        headers:
+          name: content-type
+          value: application/json
   - path: /random
     method: get
     behavior: random
@@ -54,9 +65,15 @@ endpoints:
       - statusCode: 200
         body:
           number: 1
+        headers:
+          name: content-type
+          value: application/json
       - statusCode: 200
         body:
           number: 2
+        headers:
+          name: content-type
+          value: application/json
   - path: /fake
     method: get
     responses:
@@ -69,6 +86,9 @@ endpoints:
           phone: !Fake phoneNumber
           createdAt: !Fake pastDate
           company: !Fake company
+        headers:
+          name: content-type
+          value: application/json
   - path: /delay
     method: get
     responses:
@@ -76,3 +96,6 @@ endpoints:
         delay: 500
         body:
           message: delayed by 500 ms
+        headers:
+          name: content-type
+          value: application/json
