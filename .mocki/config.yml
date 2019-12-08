@@ -6,7 +6,7 @@ endpoints:
     responses:
       - statusCode: 200
         body:
-          message: Hello from Mocki!
+          message: Hello from Mocki
         headers:
           name: content-type
           value: application/json
