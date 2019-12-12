@@ -18,15 +18,15 @@ Support for
    Hello world example:
 
    ```
-   name: mocki
-   port: 3000
-   endpoints:
-   - path: /
-       method: get
-       responses:
-       - statusCode: 200
-           body:
-           message: Hello World!
+    name: mocki
+    port: 3000
+    endpoints:
+      - path: /hello
+        method: get
+          responses:
+            - statusCode: 200
+              body:
+                message: Hello from Mocki!
    ```
 
 3. Start your mock by running `mocki run --path ./path/to/config.yml`
