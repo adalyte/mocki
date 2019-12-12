@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
+import args from 'command-line-args';
 import config from './config';
 import logger from './logger';
 import express from 'express';
-import args from 'command-line-args';
-import { get } from 'lodash';
+import mockMiddleware from './mock-middleware';
 
 const app = express();
 const options = args([
@@ -19,52 +19,13 @@ const options = args([
 const configuration = config.get(options.path);
 const port = configuration.port || 3000;
 
-const validOperators = ['eq'];
+const getConfiguration = req => {
+  const segments = req.url.split('/');
+  const parsedPath = `/${segments.slice(1, segments.length).join('/')}`;
+  return { parsedPath, configuration };
+};
 
-configuration.endpoints.forEach(endpoint => {
-  app[endpoint.method](endpoint.path, (req, res) => {
-    let response;
-    const defaultResponse = endpoint.responses[0];
-    if (!endpoint.behavior) response = defaultResponse;
-    else if (endpoint.behavior === 'random') {
-      response =
-        endpoint.responses[
-          Math.floor(Math.random() * endpoint.responses.length)
-        ];
-    } else if (endpoint.behavior === 'conditional') {
-      endpoint.responses.forEach(response => {
-        if (!validOperators.includes(response.condition.operator)) {
-          logger.error(
-            `Invalid operator '${
-              response.condition.operator
-            }'. Valid operators are: ${validOperators.join(', ')}.`
-          );
-        }
-      });
-      response = endpoint.responses.find(
-        response =>
-          get(req, response.condition.comparand) === response.condition.value
-      );
-    }
-    if (!response) response = defaultResponse;
-    if (response.delay && response.delay > 0) {
-      const start = new Date().getTime();
-      for (var i = 0; i < 1e7; i++) {
-        if (new Date().getTime() - start > response.delay) {
-          break;
-        }
-      }
-    }
-
-    res.status(response.statusCode || 200);
-    if (response.headers) {
-      response.headers.forEach(header => {
-        res.set(header.name, header.value);
-      });
-    }
-    res.send(response.body);
-  });
-});
+app.use(mockMiddleware({ getConfiguration, logger }));
 
 app.listen(port, () => {
   logger.info('🚀 Thank you for using Mocki!\n');

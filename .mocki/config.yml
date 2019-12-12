@@ -8,8 +8,8 @@ endpoints:
         body:
           message: Hello from Mocki
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
   - path: /conditional
     method: get
     behavior: conditional
@@ -22,8 +22,8 @@ endpoints:
         body:
           message: valid header
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
       - statusCode: 401
         condition: # trigger if authorization header equals 'invalid'
           operator: eq
@@ -32,8 +32,8 @@ endpoints:
         body:
           message: invalid header
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
   - path: /conditional/:id
     method: get
     behavior: conditional
@@ -46,8 +46,8 @@ endpoints:
         body:
           message: param value was a
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
       - statusCode: 200
         condition:
           operator: eq
@@ -56,8 +56,8 @@ endpoints:
         body:
           message: param value was b
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
   - path: /random
     method: get
     behavior: random
@@ -66,14 +66,14 @@ endpoints:
         body:
           number: 1
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
       - statusCode: 200
         body:
           number: 2
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
   - path: /fake
     method: get
     responses:
@@ -87,8 +87,8 @@ endpoints:
           createdAt: !Fake pastDate
           company: !Fake company
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json
   - path: /delay
     method: get
     responses:
@@ -97,5 +97,5 @@ endpoints:
         body:
           message: delayed by 500 ms
         headers:
-          name: content-type
-          value: application/json
+          - name: content-type
+            value: application/json

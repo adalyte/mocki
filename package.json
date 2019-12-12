@@ -17,6 +17,7 @@
     "faker": "^4.1.0",
     "fs": "0.0.1-security",
     "lodash": "^4.17.15",
+    "path-to-regexp": "^6.1.0",
     "yaml": "^1.7.2"
   },
   "devDependencies": {
