@@ -1,6 +1,6 @@
 {
   "name": "mocki",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "bin": "lib/cli.js",
   "description": "",
   "main": "lib/index.js",
@@ -11,6 +11,14 @@
   },
   "author": "adalyte",
   "license": "ISC",
+  "homepage": "https://mocki.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adalyte/mocki"
+  },
+  "bugs": {
+    "url": "https://github.com/adalyte/mocki/issues"
+  },
   "dependencies": {
     "chalk": "^3.0.0",
     "command-line-args": "^5.1.1",
