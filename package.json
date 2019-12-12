@@ -5,9 +5,8 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "start": "npx babel-node src/app.js",
+    "start": "npx babel-node src/cli.js",
     "prepublish": "babel src --out-dir lib",
-    "run": "mocki",
     "test:unit": "node_modules/.bin/mocha --require babel-core/register test/unit/**.unit.js"
   },
   "author": "adalyte",

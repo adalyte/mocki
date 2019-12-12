@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 import args from 'command-line-args';
-import config from './config';
 import logger from './logger';
-import express from 'express';
-import mockMiddleware from './mock-middleware';
+import run from './run';
 
-const app = express();
 const options = args([
+  {
+    name: 'positionals',
+    multiple: true,
+    defaultOption: true
+  },
   {
     name: 'path',
     alias: 'p',
@@ -16,28 +18,23 @@ const options = args([
   }
 ]);
 
-const configuration = config.get(options.path);
-const port = configuration.port || 3000;
+const validArgs =
+  options.positionals &&
+  options.positionals.length === 1 &&
+  options.positionals.every(p => p);
 
-const getConfiguration = req => {
-  const segments = req.url.split('/');
-  const parsedPath = `/${segments.slice(1, segments.length).join('/')}`;
-  return { parsedPath, configuration };
-};
+if (!validArgs) {
+  logger.error('Invalid arguments provided');
+  process.exit(0);
+}
 
-app.use(mockMiddleware({ getConfiguration, logger }));
-
-app.listen(port, () => {
-  logger.info('🚀 Thank you for using Mocki!\n');
-  logger.info(
-    '📘 Having trouble? Check out the official documentation at https://mocki.io/docs\n'
-  );
-  logger.info('Endpoints:\n', ' ');
-  configuration.endpoints.forEach(endpoint => {
-    logger.white(`${endpoint.method.toUpperCase()} - ${endpoint.path}`, ' ');
-  });
-  logger.info(
-    `\n${configuration.name} running on http://localhost:${port}`,
-    ' '
-  );
-});
+switch (options.positionals[0]) {
+  case 'run':
+    run(options);
+    break;
+  default:
+    logger.error(
+      `Invalid command "${options.positionals[0]}". Valid commands are: run`
+    );
+    process.exit(0);
+}
