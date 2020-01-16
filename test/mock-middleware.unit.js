@@ -241,4 +241,24 @@ describe('mock middleware unit tests', () => {
     await request.get('/');
     expect(loggerSpy.getCall(0).args[0]).to.match(/Invalid operator/);
   });
+
+  it('should return empty response', async () => {
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => ({
+          parsedPath: '/',
+          configuration: {
+            endpoints: []
+          }
+        }),
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .get('/')
+      .then(res =>
+        expect(res.body).to.have.property('message', 'Path not found')
+      );
+  });
 });

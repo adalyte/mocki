@@ -1,4 +1,4 @@
-import { match, pathToRegexp } from 'path-to-regexp';
+import { pathToRegexp } from 'path-to-regexp';
 import { get } from 'lodash';
 
 const mockMiddleware = options => async (req, res, next) => {
@@ -10,7 +10,7 @@ const mockMiddleware = options => async (req, res, next) => {
     parsedPath.match(pathToRegexp(endpointToMatch.path))
   );
 
-  if (!endpoint) return res.send(null);
+  if (!endpoint) return res.send({ message: 'Path not found' });
 
   const validOperators = ['eq'];
 
