@@ -1,4 +1,5 @@
 import { match, pathToRegexp } from 'path-to-regexp';
+import { get } from 'lodash';
 
 const mockMiddleware = options => async (req, res, next) => {
   const { getConfiguration, logger } = options;
@@ -9,13 +10,9 @@ const mockMiddleware = options => async (req, res, next) => {
     parsedPath.match(pathToRegexp(endpointToMatch.path))
   );
 
-  if (!endpoint) return req.send(null);
+  if (!endpoint) return res.send(null);
 
   const validOperators = ['eq'];
-
-  const requestData = match(endpoint.path, { decode: decodeURIComponent })(
-    parsedPath
-  );
 
   let response;
   const defaultResponse = endpoint.responses[0];
@@ -35,12 +32,12 @@ const mockMiddleware = options => async (req, res, next) => {
     });
     response = endpoint.responses.find(
       response =>
-        get(requestData, response.condition.comparand) ===
-        response.condition.value
+        get(req, response.condition.comparand) === response.condition.value
     );
   }
   if (!response) response = defaultResponse;
   if (response.delay && response.delay > 0) {
+    // TODO: Use async sleep
     const start = new Date().getTime();
     for (let i = 0; i < 1e7; i += 1) {
       if (new Date().getTime() - start > response.delay) {
