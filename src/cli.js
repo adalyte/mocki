@@ -14,7 +14,7 @@ const options = args([
     name: 'path',
     alias: 'p',
     type: String,
-    defaultOption: '.mocki/plain.yml'
+    defaultOption: '.mocki/config.yml'
   }
 ]);
 
