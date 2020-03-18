@@ -14,6 +14,7 @@ const run = ({ path }) => {
     return { parsedPath, configuration };
   };
 
+  app.use(express.json());
   app.use(mockMiddleware({ getConfiguration, logger }));
 
   app.listen(port, () => {
