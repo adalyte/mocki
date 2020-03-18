@@ -53,6 +53,8 @@ const mockMiddleware = options => async (req, res, next) => {
     });
   }
 
+  res.set('Access-Control-Allow-Origin', '*');
+
   return res.send(response.body);
 };
 
