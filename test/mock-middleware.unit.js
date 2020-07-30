@@ -40,7 +40,7 @@ describe('mock middleware unit tests', () => {
     return request
       .get('/test')
       .expect(200)
-      .then((res) => {
+      .then(res => {
         expect(res.body).to.have.property('message');
         expect(res.body.message).to.equal('hello');
       });
@@ -74,7 +74,7 @@ describe('mock middleware unit tests', () => {
       .get('/')
       .expect('foo', 'bar')
       .expect(200)
-      .then((res) => {
+      .then(res => {
         expect(res.body).to.have.property('message');
         expect(res.body.message).to.equal('hello');
       });
@@ -147,7 +147,7 @@ describe('mock middleware unit tests', () => {
       request
         .get('/')
         .expect(200)
-        .then((res) => responses.push(res.body.value))
+        .then(res => responses.push(res.body.value))
     );
     expect(responses).to.include('a');
     expect(responses).to.include('b');
@@ -198,12 +198,12 @@ describe('mock middleware unit tests', () => {
       .get('/')
       .set('foo', 'bar')
       .expect(200)
-      .then((res) => expect(res.body.value).equals('a'));
+      .then(res => expect(res.body.value).equals('a'));
     await request
       .get('/')
       .set('foo', 'baz')
       .expect(200)
-      .then((res) => expect(res.body.value).equals('b'));
+      .then(res => expect(res.body.value).equals('b'));
   });
 
   it('should throw when using invalid operator', async () => {
@@ -257,7 +257,7 @@ describe('mock middleware unit tests', () => {
     const request = supertest(app);
     return request
       .get('/')
-      .then((res) =>
+      .then(res =>
         expect(res.body).to.have.property('message', 'Path not found')
       );
   });

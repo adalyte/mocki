@@ -21,7 +21,7 @@ const options = args([
 const validArgs =
   options.positionals &&
   options.positionals.length === 1 &&
-  options.positionals.every((p) => p);
+  options.positionals.every(p => p);
 
 if (!validArgs) {
   logger.error('Invalid arguments provided');

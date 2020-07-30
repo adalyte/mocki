@@ -8,7 +8,7 @@ const run = ({ path }) => {
   const configuration = config.get(path);
   const port = configuration.port || 3000;
 
-  const getConfiguration = (req) => {
+  const getConfiguration = req => {
     const segments = req.url.split('/');
     const parsedPath = `/${segments.slice(1, segments.length).join('/')}`;
     return { parsedPath, configuration };
@@ -23,7 +23,7 @@ const run = ({ path }) => {
       '📘 Having trouble? Check out the official documentation at https://mocki.io/docs\n'
     );
     logger.info('Endpoints:\n', ' ');
-    configuration.endpoints.forEach((endpoint) => {
+    configuration.endpoints.forEach(endpoint => {
       logger.white(`${endpoint.method.toUpperCase()} - ${endpoint.path}`, ' ');
     });
     logger.info(

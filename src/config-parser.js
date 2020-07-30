@@ -1,7 +1,7 @@
 const faker = require('faker');
 const yaml = require('yaml');
 
-const parse = (config) => {
+const parse = config => {
   const fake = {
     tag: '!Fake',
     resolve: (_doc, cst) => {
