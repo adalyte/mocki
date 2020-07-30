@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import args from 'command-line-args';
-import logger from './logger';
-import run from './run';
+const args = require('command-line-args');
+const logger = require('./logger');
+const run = require('./run');
 
 const options = args([
   {
@@ -21,7 +21,7 @@ const options = args([
 const validArgs =
   options.positionals &&
   options.positionals.length === 1 &&
-  options.positionals.every(p => p);
+  options.positionals.every((p) => p);
 
 if (!validArgs) {
   logger.error('Invalid arguments provided');

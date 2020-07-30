@@ -1,14 +1,14 @@
-import express from 'express';
-import config from './config';
-import mockMiddleware from './mock-middleware';
-import logger from './logger';
+const express = require('express');
+const config = require('./config');
+const mockMiddleware = require('./mock-middleware');
+const logger = require('./logger');
 
 const run = ({ path }) => {
   const app = express();
   const configuration = config.get(path);
   const port = configuration.port || 3000;
 
-  const getConfiguration = req => {
+  const getConfiguration = (req) => {
     const segments = req.url.split('/');
     const parsedPath = `/${segments.slice(1, segments.length).join('/')}`;
     return { parsedPath, configuration };
@@ -23,7 +23,7 @@ const run = ({ path }) => {
       '📘 Having trouble? Check out the official documentation at https://mocki.io/docs\n'
     );
     logger.info('Endpoints:\n', ' ');
-    configuration.endpoints.forEach(endpoint => {
+    configuration.endpoints.forEach((endpoint) => {
       logger.white(`${endpoint.method.toUpperCase()} - ${endpoint.path}`, ' ');
     });
     logger.info(
@@ -33,4 +33,4 @@ const run = ({ path }) => {
   });
 };
 
-export default run;
+module.exports = run;

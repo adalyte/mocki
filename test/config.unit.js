@@ -1,9 +1,9 @@
-import fs from 'fs';
-import sinon from 'sinon';
-import { expect } from 'chai';
-import configuration from '../src/config';
-import configParser from '../src/config-parser';
-import logger from '../src/logger';
+const fs = require('fs');
+const sinon = require('sinon');
+const { expect } = require('chai');
+const configuration = require('../src/config');
+const configParser = require('../src/config-parser');
+const logger = require('../src/logger');
 
 const config = {
   name: 'test',

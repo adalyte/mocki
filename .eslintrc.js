@@ -4,17 +4,12 @@ module.exports = {
     ecmaVersion: 6,
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true,
       modules: true,
       experimentalObjectRestSpread: true
     }
   },
   env: {
-    browser: true,
     mocha: true
-  },
-  globals: {
-    fetch: true
   },
   extends: ['eslint-config-airbnb-base', 'eslint-config-prettier'],
   rules: {

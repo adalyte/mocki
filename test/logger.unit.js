@@ -1,8 +1,9 @@
-import sinon from 'sinon';
-import chai, { expect } from 'chai';
-import sinonChai from 'sinon-chai';
-import logger from '../src/logger';
+const sinon = require('sinon');
+const chai = require('chai');
+const sinonChai = require('sinon-chai');
+const logger = require('../src/logger');
 
+const { expect } = chai;
 chai.use(sinonChai);
 
 describe('logger unit tests', () => {

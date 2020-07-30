@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+const chalk = require('chalk');
 
 const info = (message, prefix = '') => {
   console.log(prefix, chalk.green(`${prefix}${message}`));
@@ -12,7 +12,7 @@ const error = (message, prefix = '') => {
   console.log(prefix, chalk.red(`${prefix}${message}`));
 };
 
-export default {
+module.exports = {
   info,
   white,
   error

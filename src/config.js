@@ -1,6 +1,6 @@
-import fs from 'fs';
-import logger from './logger';
-import configParser from './config-parser';
+const fs = require('fs');
+const logger = require('./logger');
+const configParser = require('./config-parser');
 
 const get = (path = './.mocki/config.yml') => {
   let config;
@@ -20,6 +20,4 @@ const get = (path = './.mocki/config.yml') => {
   return parsedConfig;
 };
 
-export default {
-  get
-};
+module.exports = { get };
