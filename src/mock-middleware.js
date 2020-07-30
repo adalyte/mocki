@@ -1,5 +1,5 @@
-import { pathToRegexp } from 'path-to-regexp';
-import { get } from 'lodash';
+const { pathToRegexp } = require('path-to-regexp');
+const { get } = require('lodash');
 
 const mockMiddleware = options => async (req, res, next) => {
   const { getConfiguration, logger } = options;
@@ -58,4 +58,4 @@ const mockMiddleware = options => async (req, res, next) => {
   return res.send(response.body);
 };
 
-export default mockMiddleware;
+module.exports = mockMiddleware;

@@ -1,7 +1,7 @@
-import express from 'express';
-import config from './config';
-import mockMiddleware from './mock-middleware';
-import logger from './logger';
+const express = require('express');
+const config = require('./config');
+const mockMiddleware = require('./mock-middleware');
+const logger = require('./logger');
 
 const run = ({ path }) => {
   const app = express();
@@ -33,4 +33,4 @@ const run = ({ path }) => {
   });
 };
 
-export default run;
+module.exports = run;

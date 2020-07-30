@@ -1,5 +1,5 @@
-import faker from 'faker';
-import yaml from 'yaml';
+const faker = require('faker');
+const yaml = require('yaml');
 
 const parse = config => {
   const fake = {
@@ -57,6 +57,4 @@ const parse = config => {
   return yaml.parse(config, { customTags: [fake] });
 };
 
-export default {
-  parse
-};
+module.exports = { parse };

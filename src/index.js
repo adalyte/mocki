@@ -1,5 +1,5 @@
-import configParser from './config-parser';
-import mockMiddleware from './mock-middleware';
+const configParser = require('./config-parser');
+const mockMiddleware = require('./mock-middleware');
 
 exports.configParser = configParser;
 exports.mockMiddleware = mockMiddleware;

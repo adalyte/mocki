@@ -1,10 +1,10 @@
-import supertest from 'supertest';
-import sinon from 'sinon';
-import express from 'express';
-import { expect } from 'chai';
-import * as Promise from 'bluebird';
-import mockMiddleware from '../src/mock-middleware';
-import logger from '../src/logger';
+const supertest = require('supertest');
+const sinon = require('sinon');
+const express = require('express');
+const { expect } = require('chai');
+const Promise = require('bluebird');
+const mockMiddleware = require('../src/mock-middleware');
+const logger = require('../src/logger');
 
 let app;
 

@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import configParser from '../src/config-parser';
+const { expect } = require('chai');
+const configParser = require('../src/config-parser');
 
 describe('config parser unit tests', () => {
   it('should parse simple configuration', () => {
