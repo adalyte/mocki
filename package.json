@@ -1,6 +1,6 @@
 {
   "name": "mocki",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "bin": "src/cli.js",
   "description": "",
   "main": "src/index.js",
