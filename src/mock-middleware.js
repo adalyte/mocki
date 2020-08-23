@@ -1,16 +1,28 @@
 const { pathToRegexp } = require('path-to-regexp');
 const { get } = require('lodash');
+const graphql = require('./graphql');
 
 const mockMiddleware = options => async (req, res, next) => {
   const { getConfiguration, logger } = options;
 
   const { configuration, parsedPath } = await getConfiguration(req);
 
+  if (!configuration) {
+    return res.send({ message: 'No API configuration found' });
+  }
+
   const endpoint = configuration.endpoints.find(endpointToMatch =>
     parsedPath.match(pathToRegexp(endpointToMatch.path))
   );
 
-  if (!endpoint) return res.send({ message: 'Path not found' });
+  if (!endpoint) {
+    return res.send({ message: 'Path not found' });
+  }
+
+  if (endpoint.graphql) {
+    const graphqlResponse = await graphql(endpoint, req);
+    return res.send(graphqlResponse);
+  }
 
   const validOperators = ['eq'];
 

@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/mocki.svg)](https://badge.fury.io/js/mocki) [![Coverage Status](https://coveralls.io/repos/github/adalyte/mocki/badge.svg?branch=develop)](https://coveralls.io/github/adalyte/mocki?branch=develop)
 
-Mocki is a tool that lets you create Mock REST APIs and run them locally.
+Mocki is a tool that lets you create Mock REST and GraphQL APIs.
 
 Support for
 

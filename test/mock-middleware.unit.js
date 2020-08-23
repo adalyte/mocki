@@ -1,10 +1,12 @@
 const supertest = require('supertest');
+const bodyParser = require('body-parser');
 const sinon = require('sinon');
 const express = require('express');
 const { expect } = require('chai');
 const Promise = require('bluebird');
 const mockMiddleware = require('../src/mock-middleware');
 const logger = require('../src/logger');
+const graphqlSchema = require('./graphql-schema.json');
 
 let app;
 
@@ -260,5 +262,60 @@ describe('mock middleware unit tests', () => {
       .then(res =>
         expect(res.body).to.have.property('message', 'Path not found')
       );
+  });
+
+  it('should return configuration not found response', async () => {
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => ({
+          configuration: null,
+          parsedPath: '/'
+        }),
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .get('/')
+      .then(res =>
+        expect(res.body).to.have.property(
+          'message',
+          'No API configuration found'
+        )
+      );
+  });
+
+  it('should handle graphql', async () => {
+    app.use(bodyParser.json());
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => {
+          return {
+            parsedPath: '/',
+            configuration: {
+              endpoints: [
+                {
+                  path: '/',
+                  method: 'post',
+                  graphql: { schema: graphqlSchema }
+                }
+              ]
+            }
+          };
+        },
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .post('/')
+      .set('content-type', 'application/json')
+      .send({
+        query: `{ exampleQuery { data } } `
+      })
+      .then(res => {
+        expect(res.body).to.have.nested.property('data.exampleQuery.data');
+        expect(res.body.data.exampleQuery.data).to.be.an('array');
+      });
   });
 });

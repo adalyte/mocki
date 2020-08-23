@@ -1,6 +1,6 @@
 {
   "name": "mocki",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "bin": "src/cli.js",
   "description": "",
   "main": "src/index.js",
@@ -20,12 +20,14 @@
     "url": "https://github.com/adalyte/mocki/issues"
   },
   "dependencies": {
+    "apollo-server-express": "^2.16.1",
     "chalk": "^3.0.0",
     "command-line-args": "^5.1.1",
     "eslint": "^7.5.0",
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "fs": "0.0.1-security",
+    "graphql": "^15.3.0",
     "lodash": "^4.17.15",
     "path-to-regexp": "^6.1.0",
     "yaml": "^1.7.2"
