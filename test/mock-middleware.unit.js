@@ -297,7 +297,9 @@ describe('mock middleware unit tests', () => {
                 {
                   path: '/',
                   method: 'post',
-                  graphql: { schema: graphqlSchema }
+                  graphql: {
+                    schema: graphqlSchema
+                  }
                 }
               ]
             }
@@ -316,6 +318,51 @@ describe('mock middleware unit tests', () => {
       .then(res => {
         expect(res.body).to.have.nested.property('data.exampleQuery.data');
         expect(res.body.data.exampleQuery.data).to.be.an('array');
+      });
+  });
+  it('should handle graphql with custom mocks', async () => {
+    app.use(bodyParser.json());
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => {
+          return {
+            parsedPath: '/',
+            configuration: {
+              endpoints: [
+                {
+                  path: '/',
+                  method: 'post',
+                  graphql: {
+                    schema: graphqlSchema,
+                    mocks: {
+                      ExampleResponse: {
+                        data: ['apple', 'banana', 'pear', 'mango']
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          };
+        },
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .post('/')
+      .set('content-type', 'application/json')
+      .send({
+        query: `{ exampleQuery { data } } `
+      })
+      .then(res => {
+        expect(res.body).to.have.nested.property('data.exampleQuery.data');
+        expect(res.body.data.exampleQuery.data).to.deep.equal([
+          'apple',
+          'banana',
+          'pear',
+          'mango'
+        ]);
       });
   });
 });
