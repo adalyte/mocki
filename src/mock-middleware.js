@@ -29,10 +29,11 @@ const mockMiddleware = options => async (req, res, next) => {
   let response;
   const defaultResponse = endpoint.responses[0];
   if (!endpoint.behavior) response = defaultResponse;
-  else if (endpoint.behavior === 'random') {
+  if (endpoint.behavior === 'random') {
     response =
       endpoint.responses[Math.floor(Math.random() * endpoint.responses.length)];
-  } else if (endpoint.behavior === 'conditional') {
+  }
+  if (endpoint.behavior === 'conditional') {
     endpoint.responses.forEach(response => {
       if (!validOperators.includes(response.condition.operator)) {
         logger.error(
