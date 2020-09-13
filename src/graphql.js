@@ -3,13 +3,17 @@ const bodyParser = require('body-parser');
 const { ApolloServer } = require('apollo-server-express');
 const supertest = require('supertest');
 const { buildClientSchema } = require('graphql');
+const stringifyObject = require('./stringify-object');
 
-const generateMocks = mocks => {
-  const generatedMocks = {};
-  Object.keys(mocks).forEach(mock => {
-    generatedMocks[mock] = () => mocks[mock];
-  });
-  return generatedMocks;
+const generateMocks = obj => {
+  const objStr = stringifyObject(obj);
+  // TODO: Do not replace characters that are inside strings
+  const funcStr = objStr
+    .replace(/:/g, ': () => ')
+    .replace(/{/g, '({')
+    .replace(/}/g, '})');
+  // TODO: Make sure input object does not contain any functions, as to not allow remote code execution
+  return eval(funcStr);
 };
 
 const graphql = async (endpoint, req) => {
@@ -25,9 +29,7 @@ const graphql = async (endpoint, req) => {
   app.use(bodyParser.json());
   server.applyMiddleware({ app, path: '/' });
 
-  const request = supertest(app);
-
-  const result = await request.post('/').send(req.body);
+  const result = await supertest(app).post('/').send(req.body);
 
   return result.body;
 };

@@ -10,15 +10,15 @@
         "description": "",
         "fields": [
           {
-            "name": "exampleQuery",
-            "description": "",
+            "name": "getUser",
+            "description": "Get a user by id",
             "args": [
               {
-                "name": "ExampleInput",
-                "description": "",
+                "name": "id",
+                "description": "The id of the user",
                 "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "ExampleInput",
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -26,8 +26,32 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "ExampleResponse",
+              "name": "User",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "getUsers",
+            "description": "Get all users",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "Object", "name": "User", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "getTodos",
+            "description": "Get all todos",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": { "kind": "Object", "name": "Todo", "ofType": null }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -40,7 +64,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "ExampleInput",
+        "name": "UpdateTodoInput",
         "description": "",
         "fields": null,
         "inputFields": [
@@ -48,6 +72,18 @@
             "name": "id",
             "description": "",
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "description": "",
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null
+          },
+          {
+            "name": "done",
+            "description": "",
+            "type": { "kind": "SCALAR", "name": "Boolean", "ofType": null },
             "defaultValue": null
           }
         ],
@@ -57,17 +93,100 @@
       },
       {
         "kind": "OBJECT",
-        "name": "ExampleResponse",
+        "name": "User",
         "description": "",
         "fields": [
           {
-            "name": "data",
+            "name": "id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "email",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "todos",
             "description": "",
             "args": [],
             "type": {
               "kind": "LIST",
               "name": null,
-              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
+              "ofType": { "kind": "Todo", "name": "Todo", "ofType": null }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Todo",
+        "description": "",
+        "fields": [
+          {
+            "name": "id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "description",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "done",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -124,18 +243,18 @@
         "description": "",
         "fields": [
           {
-            "name": "exampleMutation",
+            "name": "updateTodo",
             "description": "",
             "args": [
               {
                 "name": "input",
-                "description": "",
+                "description": "Todo input",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "ExampleInput",
+                    "name": "UpdateTodoInput",
                     "ofType": null
                   }
                 },
@@ -144,7 +263,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "ExampleResponse",
+              "name": "Todo",
               "ofType": null
             },
             "isDeprecated": false,
