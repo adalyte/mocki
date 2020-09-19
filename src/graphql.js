@@ -3,17 +3,16 @@ const bodyParser = require('body-parser');
 const { ApolloServer } = require('apollo-server-express');
 const supertest = require('supertest');
 const { buildClientSchema } = require('graphql');
-const stringifyObject = require('./stringify-object');
 
 const generateMocks = obj => {
-  const objStr = stringifyObject(obj);
-  // TODO: Do not replace characters that are inside strings
-  const funcStr = objStr
-    .replace(/:/g, ': () => ')
-    .replace(/{/g, '({')
-    .replace(/}/g, '})');
-  // TODO: Make sure input object does not contain any functions, as to not allow remote code execution
-  return eval(funcStr);
+  const result = {};
+  for (const property in obj) {
+    result[property] = () =>
+      typeof obj[property] === 'object' && !Array.isArray(obj[property])
+        ? generateMocks(obj[property])
+        : obj[property];
+  }
+  return result;
 };
 
 const graphql = async (endpoint, req) => {
