@@ -4,12 +4,15 @@ const { ApolloServer } = require('apollo-server-express');
 const supertest = require('supertest');
 const { buildClientSchema } = require('graphql');
 
-const generateMocks = mocks => {
-  const generatedMocks = {};
-  Object.keys(mocks).forEach(mock => {
-    generatedMocks[mock] = () => mocks[mock];
-  });
-  return generatedMocks;
+const generateMocks = obj => {
+  const result = {};
+  for (const property in obj) {
+    result[property] = () =>
+      typeof obj[property] === 'object' && !Array.isArray(obj[property])
+        ? generateMocks(obj[property])
+        : obj[property];
+  }
+  return result;
 };
 
 const graphql = async (endpoint, req) => {
@@ -25,9 +28,7 @@ const graphql = async (endpoint, req) => {
   app.use(bodyParser.json());
   server.applyMiddleware({ app, path: '/' });
 
-  const request = supertest(app);
-
-  const result = await request.post('/').send(req.body);
+  const result = await supertest(app).post('/').send(req.body);
 
   return result.body;
 };
