@@ -99,3 +99,22 @@ endpoints:
         headers:
           - name: content-type
             value: application/json
+  - path: /collection
+    id: collection
+    method: get
+    responses:
+      - statusCode: 200
+      body:
+        - id: a
+          name: Alpha
+        - id: b
+          name: Beta
+        - id: c
+          name: Charlie
+  - path: /single
+    method: get
+    responses:
+      - statusCode: 200
+        single:
+          source: collection
+          property: id

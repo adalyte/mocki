@@ -48,6 +48,47 @@ describe('mock middleware unit tests', () => {
       });
   });
 
+  // TODO: Descriptive test name
+  it.only('should get response from collection defined in another path', async () => {
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => ({
+          parsedPath: '/users/a', // TODO: Calculate parsedPath if missing? Why do we need to set it to the requested path?
+          configuration: {
+            endpoints: [
+              {
+                path: '/users',
+                id: 'collection',
+                method: 'get',
+                responses: [{ body: [{ id: 'a', name: 'Alpha' }], headers: [] }]
+              },
+              {
+                path: '/users/:id',
+                method: 'get',
+                responses: [
+                  {
+                    single: { source: 'collection', property: 'id' },
+                    body: null,
+                    headers: []
+                  }
+                ]
+              }
+            ]
+          }
+        }),
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .get('/users/a')
+      .expect(200)
+      .then(res => {
+        expect(res.body).to.have.property('id').that.equals('a');
+        expect(res.body).to.have.property('id').that.equals('Alpha');
+      });
+  });
+
   it('should parse headers', async () => {
     app.use(
       mockMiddleware({

@@ -59,6 +59,27 @@ const mockMiddleware = options => async (req, res, next) => {
     }
   }
 
+  // TODO: Think hard about the API here - on what level should things be? Maybe have the "single" stuff on the body instead
+  if (response.single) {
+    console.log('got a single');
+    const sourceEndpoint = configuration.endpoints.find(
+      endpointToMatch => endpointToMatch.id === response.single.source
+    );
+    console.log(`found source endpoint w id ${sourceEndpoint.id}`);
+    console.log(
+      `looking for body with id ${req.params[response.single.property]}`
+    );
+    console.log(req.params);
+    // TODO: params are empty, something wrong with parsedPath?
+    // TODO: Use first element really?
+    response.body = sourceEndpoint.responses[0].body.find(
+      sourceBody =>
+        sourceBody[response.single.property] ===
+        req.params[response.single.property]
+    );
+    console.log(`body is ${response.body}`);
+  }
+
   res.status(response.statusCode || 200);
   if (response.headers) {
     response.headers.forEach(header => {
