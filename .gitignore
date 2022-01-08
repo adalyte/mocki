@@ -63,3 +63,5 @@ typings/
 lib/
 .coveralls.yml
 coverage
+
+.DS_Store

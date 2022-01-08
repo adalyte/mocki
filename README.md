@@ -48,3 +48,10 @@ We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage Node versions
 ### Documentation
 
 Documentation is available at [Mocki.io](https://mocki.io/docs)
+
+## Publishing a new version
+
+1. Create tag from latest commit: `git tag vX.Y.Z`
+2. Push tag: `git push origin vX.Y.Z`
+3. Publish to npm: `npm publish`
+4. Update coverage report: `npm run coverage`

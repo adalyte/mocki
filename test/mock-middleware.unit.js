@@ -48,6 +48,85 @@ describe('mock middleware unit tests', () => {
       });
   });
 
+  it('should use collection reference as response body', async () => {
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => ({
+          parsedPath: '/users',
+          configuration: {
+            references: [
+              {
+                type: 'collection',
+                id: 'users',
+                data: [{ id: 'a', name: 'Alpha' }]
+              }
+            ],
+            endpoints: [
+              {
+                path: '/users',
+                method: 'get',
+                responses: [
+                  {
+                    body: { $ref: { type: 'collection', id: 'users' } },
+                    headers: []
+                  }
+                ]
+              }
+            ]
+          }
+        }),
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .get('/users')
+      .expect(200)
+      .then(res => {
+        expect(res.body).to.include({ id: 'a', name: 'Alpha' });
+      });
+  });
+
+  it('should use collection find reference as response body', async () => {
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => ({
+          parsedPath: '/users/a',
+          configuration: {
+            references: [
+              {
+                type: 'collection',
+                id: 'users',
+                data: [{ id: 'a', name: 'Alpha' }]
+              }
+            ],
+            endpoints: [
+              {
+                path: '/users/:id',
+                method: 'get',
+                responses: [
+                  {
+                    body: { $ref: { type: 'collection', id: 'users', find: 'id' } },
+                    headers: []
+                  }
+                ]
+              }
+            ]
+          }
+        }),
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .get('/users/a')
+      .expect(200)
+      .then(res => {
+        expect(res.body).to.have.property('id').that.equals('a');
+        expect(res.body).to.have.property('name').that.equals('Alpha');
+      });
+  });
+
   it('should parse headers', async () => {
     app.use(
       mockMiddleware({
@@ -257,11 +336,7 @@ describe('mock middleware unit tests', () => {
       })
     );
     const request = supertest(app);
-    return request
-      .get('/')
-      .then(res =>
-        expect(res.body).to.have.property('message', 'Path not found')
-      );
+    return request.get('/').then(res => expect(res.body).to.have.property('message', 'Path not found'));
   });
 
   it('should return configuration not found response', async () => {
@@ -275,14 +350,7 @@ describe('mock middleware unit tests', () => {
       })
     );
     const request = supertest(app);
-    return request
-      .get('/')
-      .then(res =>
-        expect(res.body).to.have.property(
-          'message',
-          'No API configuration found'
-        )
-      );
+    return request.get('/').then(res => expect(res.body).to.have.property('message', 'No API configuration found'));
   });
 
   it('should handle graphql', async () => {
@@ -321,12 +389,7 @@ describe('mock middleware unit tests', () => {
       })
       .then(res => {
         expect(res.body).to.have.nested.property('data.getUser');
-        expect(res.body.data.getUser).to.have.all.keys(
-          'id',
-          'name',
-          'email',
-          'todos'
-        );
+        expect(res.body.data.getUser).to.have.all.keys('id', 'name', 'email', 'todos');
         expect(res.body.data.getUser.todos).to.be.an('array');
         expect(res.body).to.have.nested.property('data.getUsers');
         expect(res.body.data.getUsers).to.be.an('array');
@@ -342,9 +405,7 @@ describe('mock middleware unit tests', () => {
           }`
       })
       .then(res => {
-        expect(res.body.data.updateTodo)
-          .to.be.an('object')
-          .that.has.all.keys(['id', 'description', 'done']);
+        expect(res.body.data.updateTodo).to.be.an('object').that.has.all.keys(['id', 'description', 'done']);
       });
   });
   it('should handle graphql with custom mocks', async () => {
@@ -454,15 +515,8 @@ describe('mock middleware unit tests', () => {
       })
       .then(res => {
         expect(res.body).to.have.nested.property('data.getUser');
-        expect(res.body.data.getUser).to.have.all.keys(
-          'id',
-          'name',
-          'email',
-          'todos'
-        );
-        expect(res.body.data.getUser.todos)
-          .to.be.an('array')
-          .that.deep.equals(userTodos);
+        expect(res.body.data.getUser).to.have.all.keys('id', 'name', 'email', 'todos');
+        expect(res.body.data.getUser.todos).to.be.an('array').that.deep.equals(userTodos);
         expect(res.body).to.have.nested.property('data.getUsers');
         expect(res.body.data.getUsers).to.be.an('array');
         expect(res.body.data.getUsers[0]).to.deep.equal(user);

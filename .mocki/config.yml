@@ -1,5 +1,9 @@
 name: mocki
 port: 3001
+references:
+  - type: collection
+    id: users
+    data: [{ id: 'a', name: 'Alpha' }]
 endpoints:
   - path: /
     method: get
@@ -99,3 +103,20 @@ endpoints:
         headers:
           - name: content-type
             value: application/json
+  - path: /collection
+    method: get
+    responses:
+      - statusCode: 200
+        body:
+          $ref:
+            type: collection
+            id: users
+  - path: /collection/:id
+    method: get
+    responses:
+      - statusCode: 200
+        body:
+          $ref:
+            type: collection
+            id: users
+            find: id
