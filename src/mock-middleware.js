@@ -1,4 +1,4 @@
-const { pathToRegexp } = require('path-to-regexp');
+const { pathToRegexp, match } = require('path-to-regexp');
 const { get } = require('lodash');
 const graphql = require('./graphql');
 
@@ -19,6 +19,9 @@ const mockMiddleware = options => async (req, res, next) => {
     return res.send({ message: 'Path not found' });
   }
 
+  const { params } = match(endpoint.path, { decode: decodeURIComponent })(parsedPath) || {};
+  req.params = params;
+
   if (endpoint.graphql) {
     const graphqlResponse = await graphql(endpoint, req);
     return res.send(graphqlResponse);
@@ -30,23 +33,17 @@ const mockMiddleware = options => async (req, res, next) => {
   const defaultResponse = endpoint.responses[0];
   if (!endpoint.behavior) response = defaultResponse;
   if (endpoint.behavior === 'random') {
-    response =
-      endpoint.responses[Math.floor(Math.random() * endpoint.responses.length)];
+    response = endpoint.responses[Math.floor(Math.random() * endpoint.responses.length)];
   }
   if (endpoint.behavior === 'conditional') {
     endpoint.responses.forEach(response => {
       if (!validOperators.includes(response.condition.operator)) {
         logger.error(
-          `Invalid operator '${
-            response.condition.operator
-          }'. Valid operators are: ${validOperators.join(', ')}.`
+          `Invalid operator '${response.condition.operator}'. Valid operators are: ${validOperators.join(', ')}.`
         );
       }
     });
-    response = endpoint.responses.find(
-      response =>
-        get(req, response.condition.comparand) === response.condition.value
-    );
+    response = endpoint.responses.find(response => get(req, response.condition.comparand) === response.condition.value);
   }
   if (!response) response = defaultResponse;
   if (response.delay && response.delay > 0) {
@@ -59,25 +56,15 @@ const mockMiddleware = options => async (req, res, next) => {
     }
   }
 
-  // TODO: Think hard about the API here - on what level should things be? Maybe have the "single" stuff on the body instead
-  if (response.single) {
-    console.log('got a single');
-    const sourceEndpoint = configuration.endpoints.find(
-      endpointToMatch => endpointToMatch.id === response.single.source
-    );
-    console.log(`found source endpoint w id ${sourceEndpoint.id}`);
-    console.log(
-      `looking for body with id ${req.params[response.single.property]}`
-    );
-    console.log(req.params);
-    // TODO: params are empty, something wrong with parsedPath?
-    // TODO: Use first element really?
-    response.body = sourceEndpoint.responses[0].body.find(
-      sourceBody =>
-        sourceBody[response.single.property] ===
-        req.params[response.single.property]
-    );
-    console.log(`body is ${response.body}`);
+  if (get(response, 'body.$ref') || get(response, 'body.$ref.type') === 'collection') {
+    const collection = configuration.collections.find(collection => collection.id === response.body.$ref.id);
+    if (response.body.$ref.find) {
+      response.body = collection.data.find(
+        item => item[response.body.$ref.find] === req.params[response.body.$ref.find]
+      );
+    } else {
+      response.body = collection.data;
+    }
   }
 
   res.status(response.statusCode || 200);

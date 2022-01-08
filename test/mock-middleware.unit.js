@@ -48,27 +48,31 @@ describe('mock middleware unit tests', () => {
       });
   });
 
-  // TODO: Descriptive test name
-  it.only('should get response from collection defined in another path', async () => {
+  it('should use collection reference as response body', async () => {
     app.use(
       mockMiddleware({
         getConfiguration: async () => ({
-          parsedPath: '/users/a', // TODO: Calculate parsedPath if missing? Why do we need to set it to the requested path?
+          parsedPath: '/users/a',
           configuration: {
+            collections: [
+              {
+                id: 'users',
+                data: [{ id: 'a', name: 'Alpha' }]
+              }
+            ],
             endpoints: [
               {
                 path: '/users',
                 id: 'collection',
                 method: 'get',
-                responses: [{ body: [{ id: 'a', name: 'Alpha' }], headers: [] }]
+                responses: [{ body: { $ref: { type: 'collection', id: 'users' } }, headers: [] }]
               },
               {
                 path: '/users/:id',
                 method: 'get',
                 responses: [
                   {
-                    single: { source: 'collection', property: 'id' },
-                    body: null,
+                    body: { $ref: { type: 'collection', id: 'users', find: 'id' } },
                     headers: []
                   }
                 ]
@@ -80,12 +84,18 @@ describe('mock middleware unit tests', () => {
       })
     );
     const request = supertest(app);
-    return request
+    await request
       .get('/users/a')
       .expect(200)
       .then(res => {
         expect(res.body).to.have.property('id').that.equals('a');
-        expect(res.body).to.have.property('id').that.equals('Alpha');
+        expect(res.body).to.have.property('name').that.equals('Alpha');
+      });
+    await request
+      .get('/users')
+      .expect(200)
+      .then(res => {
+        expect(res.body).to.include({ id: 'a', name: 'Alpha' });
       });
   });
 
@@ -298,11 +308,7 @@ describe('mock middleware unit tests', () => {
       })
     );
     const request = supertest(app);
-    return request
-      .get('/')
-      .then(res =>
-        expect(res.body).to.have.property('message', 'Path not found')
-      );
+    return request.get('/').then(res => expect(res.body).to.have.property('message', 'Path not found'));
   });
 
   it('should return configuration not found response', async () => {
@@ -316,14 +322,7 @@ describe('mock middleware unit tests', () => {
       })
     );
     const request = supertest(app);
-    return request
-      .get('/')
-      .then(res =>
-        expect(res.body).to.have.property(
-          'message',
-          'No API configuration found'
-        )
-      );
+    return request.get('/').then(res => expect(res.body).to.have.property('message', 'No API configuration found'));
   });
 
   it('should handle graphql', async () => {
@@ -362,12 +361,7 @@ describe('mock middleware unit tests', () => {
       })
       .then(res => {
         expect(res.body).to.have.nested.property('data.getUser');
-        expect(res.body.data.getUser).to.have.all.keys(
-          'id',
-          'name',
-          'email',
-          'todos'
-        );
+        expect(res.body.data.getUser).to.have.all.keys('id', 'name', 'email', 'todos');
         expect(res.body.data.getUser.todos).to.be.an('array');
         expect(res.body).to.have.nested.property('data.getUsers');
         expect(res.body.data.getUsers).to.be.an('array');
@@ -383,9 +377,7 @@ describe('mock middleware unit tests', () => {
           }`
       })
       .then(res => {
-        expect(res.body.data.updateTodo)
-          .to.be.an('object')
-          .that.has.all.keys(['id', 'description', 'done']);
+        expect(res.body.data.updateTodo).to.be.an('object').that.has.all.keys(['id', 'description', 'done']);
       });
   });
   it('should handle graphql with custom mocks', async () => {
@@ -495,15 +487,8 @@ describe('mock middleware unit tests', () => {
       })
       .then(res => {
         expect(res.body).to.have.nested.property('data.getUser');
-        expect(res.body.data.getUser).to.have.all.keys(
-          'id',
-          'name',
-          'email',
-          'todos'
-        );
-        expect(res.body.data.getUser.todos)
-          .to.be.an('array')
-          .that.deep.equals(userTodos);
+        expect(res.body.data.getUser).to.have.all.keys('id', 'name', 'email', 'todos');
+        expect(res.body.data.getUser.todos).to.be.an('array').that.deep.equals(userTodos);
         expect(res.body).to.have.nested.property('data.getUsers');
         expect(res.body.data.getUsers).to.be.an('array');
         expect(res.body.data.getUsers[0]).to.deep.equal(user);
