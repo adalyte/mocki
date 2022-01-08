@@ -52,10 +52,11 @@ describe('mock middleware unit tests', () => {
     app.use(
       mockMiddleware({
         getConfiguration: async () => ({
-          parsedPath: '/users/a',
+          parsedPath: '/users',
           configuration: {
-            collections: [
+            references: [
               {
+                type: 'collection',
                 id: 'users',
                 data: [{ id: 'a', name: 'Alpha' }]
               }
@@ -63,10 +64,43 @@ describe('mock middleware unit tests', () => {
             endpoints: [
               {
                 path: '/users',
-                id: 'collection',
                 method: 'get',
-                responses: [{ body: { $ref: { type: 'collection', id: 'users' } }, headers: [] }]
-              },
+                responses: [
+                  {
+                    body: { $ref: { type: 'collection', id: 'users' } },
+                    headers: []
+                  }
+                ]
+              }
+            ]
+          }
+        }),
+        logger
+      })
+    );
+    const request = supertest(app);
+    return request
+      .get('/users')
+      .expect(200)
+      .then(res => {
+        expect(res.body).to.include({ id: 'a', name: 'Alpha' });
+      });
+  });
+
+  it('should use collection find reference as response body', async () => {
+    app.use(
+      mockMiddleware({
+        getConfiguration: async () => ({
+          parsedPath: '/users/a',
+          configuration: {
+            references: [
+              {
+                type: 'collection',
+                id: 'users',
+                data: [{ id: 'a', name: 'Alpha' }]
+              }
+            ],
+            endpoints: [
               {
                 path: '/users/:id',
                 method: 'get',
@@ -84,18 +118,12 @@ describe('mock middleware unit tests', () => {
       })
     );
     const request = supertest(app);
-    await request
+    return request
       .get('/users/a')
       .expect(200)
       .then(res => {
         expect(res.body).to.have.property('id').that.equals('a');
         expect(res.body).to.have.property('name').that.equals('Alpha');
-      });
-    await request
-      .get('/users')
-      .expect(200)
-      .then(res => {
-        expect(res.body).to.include({ id: 'a', name: 'Alpha' });
       });
   });
 

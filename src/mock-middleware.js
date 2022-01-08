@@ -57,12 +57,13 @@ const mockMiddleware = options => async (req, res, next) => {
   }
 
   if (get(response, 'body.$ref') || get(response, 'body.$ref.type') === 'collection') {
-    const collection = configuration.collections.find(collection => collection.id === response.body.$ref.id);
+    const collection = configuration.references.find(collection => collection.id === response.body.$ref.id);
     if (response.body.$ref.find) {
       response.body = collection.data.find(
         item => item[response.body.$ref.find] === req.params[response.body.$ref.find]
       );
     } else {
+      console.log('hello');
       response.body = collection.data;
     }
   }
